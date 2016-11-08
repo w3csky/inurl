@@ -1,20 +1,18 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
 const express = require('express');
 const ejs = require('ejs');
-const routes = require('./routers');
-const list = require('./routers/list');
-const detail = require('./routers/detail');
+const mysql=require('mysql');
+const Redis=require('ioredis');
 
-const async = require('async');
+const surl=require('./core.js');
+
 
 //创建应用
 const app = express();
 const router = express.Router();
 
-app.listen(3000);
+app.listen(8080);
 
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
@@ -28,8 +26,16 @@ app.get('/', function(req, res) {
 
 
 app.get('/:surl',function(req,res){
-  //code here
-  res.redirect(301, '');
+	
+	if(req.params.surl!=='favicon.ico'){
+		console.log(surl.idToURL(1));
+		console.log(surl.URLToId(surl.idToURL(1)));
+		//code here
+		var target=''+req.params.surl;
+		//res.redirect(301,target);
+	}
+  
+  res.end()
 });
 
 //404
@@ -38,6 +44,7 @@ app.get('*', function(req, res) {
 });
 
 app.use(function (err, req, res, next) {
+
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
