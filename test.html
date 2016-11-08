@@ -1,4 +1,12 @@
- var dict = 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,0,1,2,3,4,5,6,7,8,9';
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		 var dict = 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,0,1,2,3,4,5,6,7,8,9';
 
  var dictTable = dict.split(',');
 
@@ -49,15 +57,13 @@ function URLToId(url){
 	console.log(drawId)
 	while (drawId.length) {
 		
-         var i = drawId.pop()*62;
+         var i = drawId.pop() *62;
 		 //console.log(i)
          dataId+=i;
 		 //console.log(dataId)
      }
 	return dataId;
 }
-
- module.exports={
-	 idToURL:idToURL,
-	 URLToId:URLToId
- }
+	</script>
+</body>
+</html>
