@@ -32,7 +32,7 @@ app.get('/:surl',function(req,res){
 		console.log(surl.URLToId(surl.idToURL(1)));
 		//code here
 		var target=''+req.params.surl;
-		//res.redirect(301,target);
+		res.redirect(301,'https://www.w3csky.com/'+target);
 	}
   
   res.end()
