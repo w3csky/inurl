@@ -12,7 +12,7 @@ const surl = require('./core.js');
 const app = express();
 const router = express.Router();
 
-app.listen(8087);
+app.listen(8083);
 
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
@@ -33,6 +33,8 @@ app.get('/', (req, res) => {
 app.get('/favicon.ico', (req, res) => {
     res.end();
 });
+
+
 app.get('/addurl/', (req, res) => {
 
     var jsonpName = req.query.callback;
@@ -44,7 +46,7 @@ app.get('/addurl/', (req, res) => {
 
         var conn = mysql.createConnection(mysqlOpt);
 
-        var SQL = 'SELECT uid FROM `surl` WHERE target=' + queryURL;
+        var SQL = 'SELECT uid FROM `surl` WHERE target ="' + queryURL + '"';
         console.log('unde', queryURL)
             //查库，确认是否已经存在相应链接
         conn.query(SQL, (err, rows, fields) => {
@@ -67,7 +69,8 @@ app.get('/addurl/', (req, res) => {
                     }
                 } else {
                     //插入到数据库中
-                    var InsertSQL = 'INSERT INTO `surl` (target) VALUES (' + queryURL + ')';
+                    var InsertSQL = 'INSERT INTO `surl` (target) VALUES ("' + queryURL + '")';
+
                     //获取自增id
                     var uidSQL = 'SELECT LAST_INSERT_ID()';
                     conn.query(InsertSQL, (err2, rows2, fields) => {
@@ -92,6 +95,8 @@ app.get('/addurl/', (req, res) => {
                                             console.log(queryURL);
                                             res.end(surl.idToURL(uid));
                                         }
+                                    } else {
+                                        console.log('没获取到数据库里uid');
                                     }
 
                                 }
@@ -108,7 +113,6 @@ app.get('/addurl/', (req, res) => {
         });
 
 
-
     } else {
         data.code = 404;
         data.result = null;
@@ -118,18 +122,20 @@ app.get('/addurl/', (req, res) => {
 
 });
 
+
 //短网址跳转
 app.get('/:surl', (req, res) => {
     console.log(req.params.surl)
 
 
+
     if (req.params.surl !== 'favicon.ico') {
-        console.log('changdu:', req.params.surl)
         if (req.params.surl.length <= 6) {
             //连接mysql
             var conn = mysql.createConnection(mysqlOpt);
 
             var surlId = surl.URLToId(req.params.surl);
+            console.log('surl', req.params.surl);
             console.log('surlId', surlId);
 
             var SQL = 'SELECT target FROM `surl` WHERE uid=' + surlId;
@@ -148,7 +154,7 @@ app.get('/:surl', (req, res) => {
                 };
 
                 //释放mysql连接
-                conn.end();
+                //conn.end();
             });
         } else {
             res.status(404).send('404');
@@ -157,9 +163,16 @@ app.get('/:surl', (req, res) => {
     }
 
 
+    //res.end('enter')
 
 
 });
+
+
+
+
+
+
 
 
 //404
