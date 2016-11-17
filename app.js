@@ -12,7 +12,7 @@ const surl = require('./core.js');
 const app = express();
 const router = express.Router();
 
-app.listen(8083);
+app.listen(8089);
 
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
@@ -124,47 +124,39 @@ app.get('/addurl/', (req, res) => {
 
 
 //短网址跳转
-app.get('/:surl', (req, res) => {
-    console.log(req.params.surl)
+app.get(/^\/([a-zA-Z0-9]{1,6})$/, (req, res) => {
+    //console.log(req.params[0])
+    var _surl = req.params[0];
 
+    if (_surl !== 'favicon.ico') {
 
+        //连接mysql
+        var conn = mysql.createConnection(mysqlOpt);
 
-    if (req.params.surl !== 'favicon.ico') {
-        if (req.params.surl.length <= 6) {
-            //连接mysql
-            var conn = mysql.createConnection(mysqlOpt);
+        var surlId = surl.URLToId(_surl);
 
-            var surlId = surl.URLToId(req.params.surl);
-            console.log('surl', req.params.surl);
-            console.log('surlId', surlId);
+        //console.log('surlId', surlId);
 
-            var SQL = 'SELECT target FROM `surl` WHERE uid=' + surlId;
-            //执行查询
-            conn.query(SQL, (err, rows, fields) => {
-                if (err) {
-                    console.log()
-                    console.log('mysql error:', err);
-                } else {
-                    if (rows.length) {
-                        var target = rows[0].target;
-                        //重定向到相应链接
-                        res.redirect(301, target);
-                        res.end();
-                    }
-                };
+        var SQL = 'SELECT target FROM `surl` WHERE uid=' + surlId;
+        //执行查询
+        conn.query(SQL, (err, rows, fields) => {
+            if (err) {
+                console.log()
+                console.log('mysql error:', err);
+            } else {
+                if (rows.length) {
+                    var target = rows[0].target;
+                    //重定向到相应链接
+                    res.redirect(301, target);
+                    res.end();
+                }
+            };
 
-                //释放mysql连接
-                //conn.end();
-            });
-        } else {
-            res.status(404).send('404');
-        }
+            //释放mysql连接
+            conn.end();
+        });
 
     }
-
-
-    //res.end('enter')
-
 
 });
 
