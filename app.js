@@ -41,6 +41,10 @@ app.get('/addurl/', (req, res) => {
     var queryURL = req.query.url;
     console.log(queryURL);
     var data = {};
+
+    var localSiteUrlReg = /^((http|https):\/\/)?\w+\/\w*/
+    var urlReg = (http | ftp | https)
+
     //如果添加的链接存在
     if (queryURL != undefined && queryURL != '') {
 
@@ -124,7 +128,7 @@ app.get('/addurl/', (req, res) => {
 
 
 //短网址跳转
-app.get(/^\/([a-zA-Z0-9]{1,6})$/, (req, res) => {
+app.get(/^\/([A-Za-z0-9]{1,6})$/, (req, res) => {
     //console.log(req.params[0])
     var _surl = req.params[0];
 
