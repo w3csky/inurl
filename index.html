@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>短网址生成服务</title>
+	<style>
+		*{margin:0;padding:0;}
+		input,input:focus{outline:none;border:none;}
+		body{font-size:16px;font-family:"Microsoft Yahei","宋体",arial;}
+		.bd-wrap{width:980px;margin:30px auto;}
+		.placeholder-box{position:relative;}
+		.placeholder{position:absolute;left:0;top:0;line-height:22px;padding:6px;font-size:12px;color:#777;text-indent:10px;}
+		.placeholder:focus{}
+		.add-url{border:1px solid #8cc665;line-height:22px;padding:6px;width:600px;text-indent:10px;}
+		.add-url:focus{border:1px solid #44a340;}
+		.compress{
+			line-height:24px;
+			padding:6px 12px;
+			display:inline-block;
+			color:#fff;
+			background:#44a340;
+			cursor:pointer;
+		}
+	</style>
+</head>
+<body>
+	<div id="hd">
+		<div id="logo-box"></div>
+	</div>
+	<div id="bd" class="bd-wrap">
+		<div id="url-box" class="url-box">
+			<div id="placeholder-box" class="placeholder-box">
+				<input type="text" name="addurl" id="J-add-url" class="add-url">
+				<input type="submit" value="缩短网址" id="J-compress" class="compress">
+				<span class="placeholder" id="J-placeholder">请输入http://或https://开头的网址</span>
+			</div>
+		</div>
+	</div>
+	<script>
+		(function(doc,att){
+			var _attax=function $(selector){
+						var aChild=[];
+							switch(selector.charAt(0)){
+								case '#':	//id
+									var aEle=document.getElementById(selector.substring(1));
+									aChild.push(aEle);
+									break;
+								case '.':	//class
+									var aEle=getElementsByClassName(document,selector.substring(1));
+									for(var j=0;j<aEle.length;j++){
+										aChild.push(aEle[j]);
+									}
+									break;
+							}
+						return aChild;
+					};
+			function getElementsByClassName(parentNode,sClass){
+				if(document.getElementsByClassName){
+					return parentNode.getElementsByClassName(sClass);
+				}else{
+					//获取所有标签
+					var aEle=document.getElementsByTagName('*');
+					//空数组存储获取到的className元素
+					var result=[];
+					//匹配sClass的正则
+					var regExp=new RegExp('\\b'+sClass+'\\b');
+					for(var i=0;i<aEle.length;i++){
+						if(regExp.test(aEle[i].className)){
+							result.push(aEle[i]);
+						}
+					}
+					//循环结束后，返回所有className的元素
+					return result;
+				}
+			};
+			
+			
+			var _domReady=function(){
+				//TODO
+				
+			};
+			
+			_attax.prototype={
+				css:function(){
+				
+				}
+				
+				
+			};
+			
+			_attax.ajax=function(){
+			
+			};
+			
+			_attax.data=function(){
+			
+			};
+			
+			
+			window.$=_attax;
+		})(document,'attax');
+		
+		
+		
+		window.onload=function(){
+			var placeholder=$('#J-placeholder')[0];
+			var url=$('#J-add-url')[0];
+			
+			placeholder.onclick=url.onfocus=function(){
+				placeholder.style.display='none';
+			};
+			
+			url.onblur=function(){
+				var urlVal=url.value;
+				console.log(urlVal);
+				if(urlVal==''){
+					placeholder.style.display='block';
+				}else{
+					placeholder.style.display='none';
+				}
+				
+			};
+		}
+	</script>
+</body>
+</html>
