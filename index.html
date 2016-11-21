@@ -5,21 +5,28 @@
 	<title>短网址生成服务</title>
 	<style>
 		*{margin:0;padding:0;}
-		input,input:focus{outline:none;border:none;}
+		textarea{resize:none;}
+		input,input:focus,textarea,textarea:focus{outline:none;border:none;}
 		body{font-size:16px;font-family:"Microsoft Yahei","宋体",arial;}
-		.bd-wrap{width:980px;margin:30px auto;}
+		.bd-wrap{width:720px;margin:30px auto;}
 		.placeholder-box{position:relative;}
 		.placeholder{position:absolute;left:0;top:0;line-height:22px;padding:6px;font-size:12px;color:#777;text-indent:10px;}
 		.placeholder:focus{}
-		.add-url{border:1px solid #8cc665;line-height:22px;padding:6px;width:600px;text-indent:10px;}
+		.add-url{border:1px solid #8cc665;line-height:22px;padding:6px;width:706px;text-indent:10px;}
 		.add-url:focus{border:1px solid #44a340;}
-		.compress{
+		.shorten{
 			line-height:24px;
 			padding:6px 12px;
 			display:inline-block;
 			color:#fff;
 			background:#44a340;
 			cursor:pointer;
+			font-size:16px;
+			vertical-align:top;
+		}
+		
+		.shorten-box{
+			text-align:right;
 		}
 	</style>
 </head>
@@ -29,10 +36,13 @@
 	</div>
 	<div id="bd" class="bd-wrap">
 		<div id="url-box" class="url-box">
+			<h1>网址缩短</h1>
 			<div id="placeholder-box" class="placeholder-box">
-				<input type="text" name="addurl" id="J-add-url" class="add-url">
-				<input type="submit" value="缩短网址" id="J-compress" class="compress">
+				<textarea  name="addurl" id="J-add-url" class="add-url" cols="30" rows="10"></textarea>
 				<span class="placeholder" id="J-placeholder">请输入http://或https://开头的网址</span>
+			</div>
+			<div id="shorten-box" class="shorten-box">
+				<input type="submit" class="shorten" id="J-shorten" value="生成网址">
 			</div>
 		</div>
 	</div>
@@ -74,35 +84,152 @@
 				}
 			};
 			
+			(function(attax){
+				//判断DOMReady方法是否执行过
+				var isReady=false;
+				//存储需要执行的函数
+				var readyList=[];
+
+				var timer=null;
+
+				attax.ready=function(fn){
+					if(isReady){
+						fn.call(document);
+					}else{
+						readyList.push(
+								function(){
+									return fn.call(this);
+								}
+							);
+					}
+					return this;
+				}
+
+				var onDOMReady=function(){
+					for(var i=0;i<readyList.length;i++){
+						readyList[i].apply(document);
+					}
+					readyList=null;
+				}
+
+
+				var bindReady=function(){
+					if(isReady) return;
+					isReady=true;
+					onDOMReady.call(window);
+					if(document.removeEventListener){
+						document.removeEventListener('DOMContentLoaded',bindReady,false);
+					} else if(document.attachEvent){
+						document.detachEvent('onreadystatechange',bindReady);
+						if(window==window.top){
+							clearInterval(timer);
+							timer=null;
+						}
+					}
+				};
+
+				if(document.addEventListener){
+					document.addEventListener('DOMContentLoaded',bindReady,false);
+				}
+				else if(document.attachEvent){
+					document.attachEvent('onreadystatechange',function(){
+						if((/loaded|complete/).test(document.readyState)){
+							bindReady();
+						}
+					});
+
+					if(window==window.top){
+						timer=setInterval(function(){
+							try{
+								//在IE下面用doScroll能否执行来判断DOM是否加载完成
+								isReady||document.documentElement.doScroll('left');
+							}catch(e){
+								return;
+							}
+							bindReady();
+						},1)
+					}
+				}
+
+			})(_attax)
+
 			
-			var _domReady=function(){
-				//TODO
-				
-			};
+			
+			
 			
 			_attax.prototype={
 				css:function(){
-				
+					
 				}
 				
 				
 			};
 			
-			_attax.ajax=function(){
+			//ajax、表单之类的
+			function json2url(json) {
+				var a = [];
+				for (var i in json) {
+					var v = json[i] + '';
+					v = v.replace(/\n/g, '<br/>');
+					v = encodeURIComponent(v);
+					a.push(i + '=' + v);
+				}
+				return a.join('&');
+			}
+
 			
+			_attax.ajax=function ajax(url, opt) {
+						opt = opt || {};
+						opt.data = opt.data || {};
+						opt.data.t = opt.data.t || new Date().getTime();
+						opt.method = opt.method || 'GET';
+
+						var oAjax = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+						if (opt.method == 'POST') {
+							oAjax.open('POST', url, true);
+							oAjax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+							try {
+								oAjax.send(opt.data ? json2url(opt.data) : null);
+							} catch (e) {}
+						} else {
+							url += '?' + json2url(opt.data);
+							oAjax.open('GET', url, true);
+							try {
+								oAjax.send();
+							} catch (e) {}
+						}
+
+						oAjax.onreadystatechange = function() {
+							if (oAjax.readyState == 4) {
+								if (oAjax.status == 200) {
+									opt.success && opt.success(oAjax.responseText);
+								} else {
+									opt.failed && opt.failed(oAjax.status);
+								}
+							}
+						};
+					};
+					
+			_attax.trim=function(str){
+				 return str.replace(/(^\s*)|(\s*$)/g,'');
 			};
 			
-			_attax.data=function(){
-			
+			_attax.ltrim=function(str){
+				 return str.replace(/(^\s*)/g,'');
 			};
-			
+			_attax.ltrim=function(str){
+				 return str.replace(/(\s*$)/g,'');
+			}
+					
 			
 			window.$=_attax;
 		})(document,'attax');
 		
 		
 		
-		window.onload=function(){
+		
+		$.ready(function(){
 			var placeholder=$('#J-placeholder')[0];
 			var url=$('#J-add-url')[0];
 			
@@ -120,7 +247,37 @@
 				}
 				
 			};
-		}
+			
+			
+			$('#J-shorten')[0].onclick=function(){
+				//
+				var val=$('#J-add-url')[0].value;
+				var _val=$.trim($('#J-add-url')[0].value);
+				//空白
+				var whiteReg=/^\s+$/;
+				//网址正则
+				var urlReg=/^((http|https):\/\/)?[a-zA-Z0-9]+\.\w+(\.\w+)+/;
+				if(whiteReg.test(val)){
+					alert('请输入网址')
+					return false;
+				}
+				
+				if(!urlReg.test(_val)){
+					alert('抱歉，您输入的网址不符合规范，请检查后重新输入！');
+				}else{
+					$.ajax('/addurl',{
+						data:{
+							url:_val
+						},
+						success:function(data){
+							alert(data);
+						}
+					
+					});
+				}
+			}
+			
+		});
 	</script>
 </body>
 </html>
