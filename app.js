@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const express = require('express');
 const ejs = require('ejs');
 const mysql = require('mysql');
@@ -16,6 +17,8 @@ app.listen(8089);
 
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
+//设置静态目录
+app.use(express.static(path.join(__dirname, 'public')));
 //更换模板目录
 //app.set('views', 'temp');
 //定义mysql连接选项
@@ -39,11 +42,11 @@ app.get('/addurl/', (req, res) => {
 
     var jsonpName = req.query.callback;
     var queryURL = req.query.url;
-    console.log(queryURL);
+    console.log('网址', queryURL);
     var data = {};
 
-    var localSiteUrlReg = /^((http|https):\/\/)?\w+\/\w*/
-    var urlReg = (http | ftp | https)
+    var localSiteUrlReg = /^((http|https):\/\/)?localhost\/\w*/
+    var urlReg = /(http | ftp | https)/;
 
     //如果添加的链接存在
     if (queryURL != undefined && queryURL != '') {
@@ -51,8 +54,8 @@ app.get('/addurl/', (req, res) => {
         var conn = mysql.createConnection(mysqlOpt);
 
         var SQL = 'SELECT uid FROM `surl` WHERE target ="' + queryURL + '"';
-        console.log('unde', queryURL)
-            //查库，确认是否已经存在相应链接
+        //console.log('unde', queryURL)
+        //查库，确认是否已经存在相应链接
         conn.query(SQL, (err, rows, fields) => {
 
 
@@ -176,11 +179,11 @@ app.get('*', (req, res) => {
     res.status(404).send('404');
 });
 
-app.use((err, req, res, next) => {
+// app.use((err, req, res, next) => {
 
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
+//     res.status(err.status || 500);
+//     res.render('error', {
+//         message: err.message,
+//         error: {}
+//     });
+// });
