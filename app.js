@@ -43,6 +43,8 @@ app.get('/addurl/', (req, res) => {
     var jsonpName = req.query.callback;
     var queryURL = req.query.url;
     console.log('网址', queryURL);
+
+    var result = {};
     var data = {};
 
     var localSiteUrlReg = /^((http|https):\/\/)?localhost\/\w*/
@@ -65,12 +67,18 @@ app.get('/addurl/', (req, res) => {
                 //如果数据库中已经存在相应的连接
                 if (rows.length) {
                     var uid = rows[0].uid;
+
+                    //返回的数据
+                    result.code = 200;
+                    result.url = queryURL;
+                    result.surl = surl.idToURL(uid);
+
                     //如果是jsonp
                     if (jsonpName != undefined) {
-                        res.end(jsonpName + '(' + queryURL + ')');
+                        res.end(jsonpName + '(' + JSON.stringify(result) + ')');
                     } else {
-                        console.log(queryURL);
-                        res.end(surl.idToURL(uid));
+
+                        res.json(result);
                     }
                 } else {
                     //插入到数据库中
@@ -93,13 +101,19 @@ app.get('/addurl/', (req, res) => {
                                     if (rows3.length) {
                                         var uid = rows3[0]['LAST_INSERT_ID()'];
 
+                                        //返回的数据
+                                        result.code = 200;
+                                        result.url = queryURL;
+                                        result.surl = surl.idToURL(uid);
+
                                         //如果是jsonp
                                         if (jsonpName != undefined) {
-                                            res.end(jsonpName + '(' + queryURL + ')');
+                                            res.end(jsonpName + '(' + JSON.stringify(result) + ')');
                                         } else {
                                             console.log('uid:', uid);
                                             console.log('dwz:', surl.idToURL(uid))
-                                            res.end(surl.idToURL(uid));
+                                                //res.end(surl.idToURL(uid));
+                                            res.json(result);
                                         }
                                     } else {
                                         console.log('没获取到数据库里uid');
