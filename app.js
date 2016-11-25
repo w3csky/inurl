@@ -58,9 +58,7 @@ app.get('/addurl/', (req, res) => {
         //查库，确认是否已经存在相应链接
         conn.query(SQL, (err, rows, fields) => {
 
-
             if (err) {
-                console.log()
                 console.log('mysql error:', err);
                 res.end();
             } else {
@@ -82,24 +80,25 @@ app.get('/addurl/', (req, res) => {
                     var uidSQL = 'SELECT LAST_INSERT_ID()';
                     conn.query(InsertSQL, (err2, rows2, fields) => {
                         if (err2) {
-                            console.log()
                             console.log('mysql error:', err2);
                             res.end();
                         } else {
                             conn.query(uidSQL, (err3, rows3, fields) => {
+                                console.log(rows3.length)
                                 if (err3) {
-                                    console.log()
                                     console.log('mysql error:', err3);
                                     res.end();
                                 } else {
 
                                     if (rows3.length) {
-                                        var uid = rows3[0].uid;
+                                        var uid = rows3[0]['LAST_INSERT_ID()'];
+
                                         //如果是jsonp
                                         if (jsonpName != undefined) {
                                             res.end(jsonpName + '(' + queryURL + ')');
                                         } else {
-                                            console.log(queryURL);
+                                            console.log('uid:', uid);
+                                            console.log('dwz:', surl.idToURL(uid))
                                             res.end(surl.idToURL(uid));
                                         }
                                     } else {
@@ -110,8 +109,6 @@ app.get('/addurl/', (req, res) => {
 
                             });
                         }
-
-
                     });
                 }
             }
@@ -168,22 +165,17 @@ app.get(/^\/([A-Za-z0-9]{1,6})$/, (req, res) => {
 });
 
 
-
-
-
-
-
-
 //404
+
 app.get('*', (req, res) => {
     res.status(404).send('404');
 });
 
-// app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {
 
-//     res.status(err.status || 500);
-//     res.render('error', {
-//         message: err.message,
-//         error: {}
-//     });
-// });
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
+});
