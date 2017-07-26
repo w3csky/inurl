@@ -1,0 +1,31 @@
+{
+  "name": "inurl",
+  "version": "1.0.0",
+  "description": "an url-shorten web service that is  written by node.js and mysql redis",
+  "main": "app.callback.js",
+  "dependencies": {
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "ioredis": "^3.1.1",
+    "mysql": "^2.13.0"
+  },
+  "devDependencies": {
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "ioredis": "^3.1.1",
+    "mysql": "^2.13.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w3csky/inurl.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/w3csky/inurl/issues"
+  },
+  "homepage": "https://github.com/w3csky/inurl#readme"
+}

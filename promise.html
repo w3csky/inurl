@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var promise=new Promise(function(resolve,reject){
+            resolve(1)
+        }).then(function(val){
+            return new Promise(function(resolve,reject){
+                //ajax2
+                alert(val)
+                resolve(2)
+            })
+            
+        },function(err){
+            //错误处理
+        }).then(function(val){
+            return new Promise(function(resolve,reject){
+                //ajax3
+               alert(val)
+               resolve(3)
+            })
+            
+        },function(err){
+            //错误处理
+        }).then(function(val){
+            return new Promise(function(resolve,reject){
+                //ajax4
+                alert(val)
+                resolve(4)
+            })
+            
+        },function(err){
+            //错误处理
+        });
+    </script>
+</body>
+</html>
