@@ -256,13 +256,23 @@
 				//空白
 				var whiteReg=/^\s+$/;
 				//网址正则
-				var urlReg=/^((http|https):\/\/)?[a-zA-Z0-9]+\.\w+(\.\w+)+/;
+				var strRegex="^((https|http|ftp|rtsp|mms)?://)"
+						+ "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
+						+ "(([0-9]{1,3}\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184
+						+ "|" // 允许IP和DOMAIN（域名）
+						+ "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
+						+ "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\." // 二级域名
+						+ "[a-z]{2,6})" // first level domain- .com or .museum
+						+ "(:[0-9]{1,4})?" // 端口- :80
+						+ "((/?)|" // a slash isn't required if there is no file name
+						+ "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+				var urlRegex=new RegExp(strRegex);
 				if(whiteReg.test(val)){
 					alert('请输入网址')
 					return false;
 				}
 				
-				if(!urlReg.test(_val)){
+				if(!urlRegex.test(_val)){
 					alert('抱歉，您输入的网址不符合规范，请检查后重新输入！');
 				}else{
 					$.ajax('/addurl',{
@@ -278,9 +288,6 @@
 			}
 			
 		});
-</script>
-<script>
-	
 </script>
 </body>
 </html>

@@ -42,7 +42,6 @@ app.get('/addurl/', (req, res) => {
 
     var jsonpName = req.query.callback;
     var queryURL = req.query.url;
-    console.log('网址', queryURL);
 
     var result = {};
     var data = {};
@@ -52,6 +51,14 @@ app.get('/addurl/', (req, res) => {
 
     //如果添加的链接存在
     if (queryURL != undefined && queryURL != '') {
+
+        //TODO 钓鱼、病毒、木马网址拦截
+        _qURL=new Buffer(queryURL).toString('base64');
+       
+        var _appkey='k-3356';
+        var _secret='a176201e188a0969cd7b7fa2ef3c8d14';
+        var _timestamp =new Date().getTime();
+    
 
         var conn = mysql.createConnection(mysqlOpt);
 
@@ -134,9 +141,6 @@ app.get('/addurl/', (req, res) => {
                     if (jsonpName != undefined) {
                         res.end(jsonpName + '(' + JSON.stringify(result) + ')');
                     } else {
-                        console.log('uid:', uid);
-                        console.log('dwz:', surl.idToURL(uid))
-                            //res.end(surl.idToURL(uid));
                         res.json(result);
                     }
                 } else {
@@ -154,6 +158,9 @@ app.get('/addurl/', (req, res) => {
         console.log('链接缺失')
         res.end('data.code: ' + data.code);
     }
+
+
+
 
 });
 
@@ -176,7 +183,6 @@ app.get(/^\/([A-Za-z0-9]{1,6})$/, (req, res) => {
         //执行查询
         conn.query(SQL, (err, rows, fields) => {
             if (err) {
-                console.log()
                 console.log('mysql error:', err);
             } else {
                 if (rows.length) {

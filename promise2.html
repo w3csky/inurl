@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var state1,state2={};
+        var p1=new Promise(function(resolve,reject){
+            $.ajax({
+                success:function(data){
+                    state1.status=1;
+                    state1.data=data;
+                    resolve(state)
+                },
+                error:function(){
+                    state1.status=0;
+                    state1.data='';
+                    resolve(state)
+                }
+            })
+        });
+
+        var p2=new Promise(function(resolve,reject){
+              $.ajax({
+                 success:function(data){
+                    state2.status=1;
+                    state2.data=data;
+                    resolve(state)
+                },
+                error:function(){
+                    state2.status=0;
+                    state2.data='';
+                    resolve(state)
+                }
+            })
+        });
+
+
+        Promise.all([p1,p2],function(val){
+
+        },function(err){
+
+        })
+    </script>
+   
+</body>
+</html>
