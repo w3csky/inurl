@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const mysqlOpt = {
     host: 'localhost',
     user: 'root',
-    password: '123456',
+    password: '12345678',
     database: 'surl'
 };
 
@@ -52,13 +52,7 @@ app.get('/addurl/', (req, res) => {
     //如果添加的链接存在
     if (queryURL != undefined && queryURL != '') {
 
-        //TODO 钓鱼、病毒、木马网址拦截
-        _qURL=new Buffer(queryURL).toString('base64');
-       
-        var _appkey='k-3356';
-        var _secret='a176201e188a0969cd7b7fa2ef3c8d14';
-        var _timestamp =new Date().getTime();
-    
+        
 
         var conn = mysql.createConnection(mysqlOpt);
 
@@ -72,10 +66,12 @@ app.get('/addurl/', (req, res) => {
                     } else {
                         resolve(rows);
                     }
+                    
             });
         })
         //查库，确认是否已经存在相应链接
        promise.then(function(rows){
+                
                 //如果数据库中已经存在相应的连接
                 if (rows.length) {
                     var uid = rows[0].uid;
@@ -110,7 +106,8 @@ app.get('/addurl/', (req, res) => {
             },function(err){
                 console.log('mysql error:', err);
                 res.end();
-            }).then(function(rows){
+            })
+        .then(function(rows){
                 //获取自增id
                 var uidSQL = 'SELECT LAST_INSERT_ID()';
 
@@ -128,7 +125,8 @@ app.get('/addurl/', (req, res) => {
             },function(err){
                 console.log('mysql error:', err);
                 res.end();
-            }).then(function(rows){
+            })
+        .then(function(rows){
                 if (rows.length) {
                     var uid = rows[0]['LAST_INSERT_ID()'];
 
@@ -136,6 +134,8 @@ app.get('/addurl/', (req, res) => {
                     result.code = 200;
                     result.url = queryURL;
                     result.surl = surl.idToURL(uid);
+
+                    console.log(result.surl)
 
                     //如果是jsonp
                     if (jsonpName != undefined) {
@@ -149,6 +149,8 @@ app.get('/addurl/', (req, res) => {
             },function(err){
                 console.log('mysql error:', err);
                 res.end();
+            }).catch(function(err){
+                console.log(err)
             });
 
 
