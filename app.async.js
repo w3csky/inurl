@@ -8,33 +8,6 @@ const Redis = require('ioredis');
 
 const surl = require('./core.js');
 
-//const fs=require('fs');
-
-
-// function readRedis(file){
-//     return new Promise(function(resolve,reject){
-//         fs.readFile(file, (err, data) => {
-//             if (err){
-//                 reject(err);
-//             }else{
-//                 resolve(data);
-//             }
-          
-//         });
-//     });
-// };
-
-
-
-
-// async function tasks(){
-//     console.log('start')
-//    var _data= await readRedis('./app.promise.js');
-//    console.log(_data.toString());
-//    console.log('end')
-// }
-
-// tasks();
 
 //创建应用
 const app = express();
@@ -125,7 +98,7 @@ app.get('/addurl/', (req, res) => {
         (async function(){
             //db中的url记录
             var urlRows=await queryURLRecord();
-            console.log(urlRows)
+            
             if(urlRows.length){
                 var uid=urlRows[0].uid;
 
