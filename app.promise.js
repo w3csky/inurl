@@ -109,43 +109,23 @@ app.get('/addurl/', (req, res) => {
             })
         .then(function(rows){
                 //获取自增id
-                var uidSQL = 'SELECT LAST_INSERT_ID()';
+                var uid=rows.insertId;
 
-                conn.query(uidSQL, (err, rows, fields) => {
-                    return new Promise(function(resolve,reject){
-                        if(err){
-                            reject(err);
-                        }else{
-                            resolve(rows);
-                        }
-                    })
-                   
-                });
+                //返回的数据
+                result.code = 200;
+                result.url = queryURL;
+                result.surl = surl.idToURL(uid);
 
-            },function(err){
-                console.log('mysql error:', err);
-                res.end();
-            })
-        .then(function(rows){
-                if (rows.length) {
-                    var uid = rows[0]['LAST_INSERT_ID()'];
+                console.log(result.surl)
 
-                    //返回的数据
-                    result.code = 200;
-                    result.url = queryURL;
-                    result.surl = surl.idToURL(uid);
-
-                    console.log(result.surl)
-
-                    //如果是jsonp
-                    if (jsonpName != undefined) {
-                        res.end(jsonpName + '(' + JSON.stringify(result) + ')');
-                    } else {
-                        res.json(result);
-                    }
+                //如果是jsonp
+                if (jsonpName != undefined) {
+                    res.end(jsonpName + '(' + JSON.stringify(result) + ')');
                 } else {
-                    console.log('没获取到数据库里uid');
+                    res.json(result);
                 }
+
+
             },function(err){
                 console.log('mysql error:', err);
                 res.end();
